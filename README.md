@@ -12,7 +12,7 @@ By now, it just reads a FFCC file and prints out the nested tag list of the diff
 
 ## Usage
 
-python tag.py <file>
+    $ python tag.py example_file.chm
 
 ## Current status
 
