@@ -2,6 +2,7 @@ import struct
 import sys
 import tag
 import mesh
+import os
 
 class Chm:
     tagtree = None
@@ -33,11 +34,13 @@ class Chm:
 # If called as script, write obj file for each mesh
 if __name__ == "__main__":
     fh = open(sys.argv[1], "rb")
+    if (len(sys.argv[1]) > 4 and sys.argv[1][-3:] == "chm") and not os.path.exists(sys.argv[1][:-4]):
+        os.makedirs(sys.argv[1][:-4])
     tagroot = tag.Tag(fh)
     chm = Chm(tagroot)
     objs = chm.chm2obj()
     for obj in objs:
-        fo = open("%s_%s.obj" % (sys.argv[1], obj["name"]), "w")
+        fo = open("%s/%s.obj" % (sys.argv[1][:-4], obj["name"]), "w")
         fo.write(obj["vertices"])
         fo.write(obj["normals"])
         fo.write(obj["uv"])
