@@ -3,6 +3,7 @@ import sys
 import tag
 import texture
 import Image
+import ImageOps
 import os
 
 class Tex:
@@ -36,4 +37,5 @@ if __name__ == "__main__":
     imgs = tex.tex2img()
     for img in imgs:
         oimg = Image.fromarray(img["data"], 'RGBA')
+        oimg = ImageOps.flip(oimg)
         oimg.save("%s/%s.png" % (sys.argv[1][:-4], img["name"]))
