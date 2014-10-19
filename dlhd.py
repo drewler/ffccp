@@ -50,7 +50,7 @@ class Dlhd:
                 for i in range(0, len(lst["data"])-2, 3):
                     fc0 = "%i/%i/%i" % (lst["data"][i][0]+1, lst["data"][i][3]+1, lst["data"][i][1]+1)
                     fc1 = "%i/%i/%i" % (lst["data"][i+1][0]+1, lst["data"][i+1][3]+1, lst["data"][i+1][1]+1)
-                    fc2 = "%i/%i/%i" % (lst["data"][i+2][0]+1, lst["data"][i+1][3]+1, lst["data"][i+1][1]+1)
+                    fc2 = "%i/%i/%i" % (lst["data"][i+2][0]+1, lst["data"][i+2][3]+1, lst["data"][i+2][1]+1)
                     fobj = "".join([fobj, "f %s %s %s\n" % (fc0, fc1, fc2)])
             elif (hex(lst["ltype"]) in ('0x92', '0x9a')):
                 for i in range(1, len(lst["data"])-1):
