@@ -18,6 +18,8 @@ A tool to read/convert FFCC files (.chm, .tex, etc)
     $ python tag.py example_file.[chm|tex|chd|...]
     $ python chm.py example_file.chm
     $ python tex.py example_file.tex
+    
+A folder named "example_file" will be created. OBJ & PNG files will be created inside this folder
 
 ## Current status
 
@@ -26,3 +28,9 @@ A tool to read/convert FFCC files (.chm, .tex, etc)
 - [x] CHM2OBJ
 - [x] TEX parser refactor
 - [x] TEX2IMG
+- [ ] Write link between model, texture and other attributes (.mtl)
+- [ ] Read more texture formats (other than [CMPR](http://hitmen.c02.at/files/yagcd/yagcd/chap17.html))
+- [ ] Read bone info
+- [ ] CHA parser
+- [ ] CHD parser
+- [ ] Write docs about file structure
