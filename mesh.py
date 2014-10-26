@@ -1,6 +1,4 @@
 import struct
-import sys
-import tag
 import dlhd
 
 class Mesh:
@@ -37,13 +35,13 @@ class Mesh:
         bytes_read = 0
         while bytes_read < vert_tag.length:
             vertex = struct.unpack(">hhh", vert_tag.binary_data[bytes_read:bytes_read+6])
-            self.vertices.append((vertex[0]/100.0, vertex[1]/100.0, vertex[2]/100.0))
+            self.vertices.append((vertex[0]/128.0, vertex[1]/128.0, vertex[2]/128.0))
             bytes_read += 6
     def parse_normals(self, norm_tag):
         bytes_read = 0
         while bytes_read < norm_tag.length:
             normal = struct.unpack('>hhh', norm_tag.binary_data[bytes_read:bytes_read+6])
-            self.normals.append((normal[0]/100.0, normal[1]/100.0, normal[2]/100.0))
+            self.normals.append((normal[0]/128.0, normal[1]/128.0, normal[2]/128.0))
             bytes_read += 6
     def parse_uv(self, uv_tag):
         bytes_read = 0

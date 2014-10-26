@@ -1,7 +1,7 @@
-import struct
 import sys
 import tag
 import mesh
+import node
 import os
 
 class Chm:
@@ -25,10 +25,17 @@ class Chm:
             if subtag.type == b"MSST": # Mesh set
                 for mesh_tag in subtag.subtags:
                     self.mesh_set.append(mesh.Mesh(mesh_tag))
+            if subtag.type == b"NSET": # Node set
+                for node_tag in subtag.subtags:
+                    self.node_set.append(node.Node(node_tag))
     def chm2obj(self):
         objs = []
         for mesh in self.mesh_set:
             objs.append(mesh.mesh2obj())
+        for node in self.node_set:
+            node.inf2obj()
+        for node in self.node_set:
+            node.binf2obj()
         return objs
         
 # If called as script, write obj file for each mesh
