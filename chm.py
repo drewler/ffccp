@@ -33,9 +33,11 @@ class Chm:
         for mesh in self.mesh_set:
             objs.append(mesh.mesh2obj())
         for node in self.node_set:
-            node.inf2obj()
-        for node in self.node_set:
-            node.binf2obj()
+            node.tfrm2obj()
+        #for node in self.node_set:
+        #    node.inf2obj()
+        #for node in self.node_set:
+        #    node.binf2obj()
         return objs
         
 # If called as script, write obj file for each mesh

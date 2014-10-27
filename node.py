@@ -51,7 +51,6 @@ class Node:
             #self.tfrm.append([i/100.0 for i in struct.unpack(">" + "hhh", tfrm_tag.binary_data[bytes_read:bytes_read+6])])  # floats
             #bytes_read += 6
         self.tfrm[3,3] = 1.0;
-        print self.tfrm
     def parse_binf(self, binf_tag):
         #self.binf = struct.unpack(">" + "hh"*4, binf_tag.binary_data[0:binf_tag.length])  # shorts
         #self.binf = [i/100.0 for i in struct.unpack(">" + "hh"*4, binf_tag.binary_data[0:binf_tag.length])]  # shorts scaled
@@ -62,9 +61,18 @@ class Node:
         self.mesh_index = struct.unpack(">L", midx_tag.binary_data[0:4])
     def tfrm2obj(self):
         print "node tfrm - %s, %s : " % (self.name, self.name2)
-        for t in self.tfrm:
-            print "\t\t %s" % str(t)
-        print "\t\t %s" % str((0.0, 0.0, 0.0, 1.0))
+        x = self.tfrm[0:3,0]
+        tail = self.tfrm[0:3,1]
+        z = self.tfrm[0:3,2]
+        head = self.tfrm[0:3,3]
+        r = np.cross(tail, z)
+        print "x    = %s" % x
+        print "tail = %s" % tail
+        print "z    = %s" % z
+        print "head = %s" % head
+        print np.cross(tail, z)
+        print "is x = cross(tail, z)? : %s" % np.array_equal(np.around(x,4),np.around(np.cross(tail, z),4))
+        
     def inf2obj(self):
         if self.info != None:
             tmp = re.findall("..", self.info.encode('hex'))
