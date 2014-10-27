@@ -22,5 +22,12 @@ class Skin:
         self.nodelst.append(struct.unpack('>2H', node_tag.binary_data[0:node_tag.length]))
     def parse_one(self, one_tag):
         bytes_read = 0
+        print one_tag.length
         while bytes_read < one_tag.length:
-            self.one.append(struct.unpack('>2H', one_tag.binary_data[bytes_read:bytes_read+4]))
+            #self.one.append(struct.unpack('>7H', one_tag.binary_data[bytes_read:bytes_read+14]))
+            len = struct.unpack('>H', one_tag.binary_data[bytes_read:bytes_read+2])[0]
+            bytes_read += 2
+            print "n: %i" % len
+            red = struct.unpack('>%iH' % len, one_tag.binary_data[bytes_read:bytes_read+len*2])
+            print red
+            bytes_read += len*2
