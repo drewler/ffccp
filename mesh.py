@@ -1,8 +1,11 @@
 import struct
 import dlhd
+import re
 
 class Mesh:
     name = None
+    info = None
+    color = None
     vertices = None
     normals = None
     texcoor = None
@@ -17,6 +20,10 @@ class Mesh:
         for mesh_subtag in mesh_tag.subtags:
             if mesh_subtag.type == b"MNAM":
                 self.parse_name(mesh_subtag)
+            elif mesh_subtag.type == b"INFO":
+                self.parse_info(mesh_subtag)
+            elif mesh_subtag.type == b"COLR":
+                self.parse_color(mesh_subtag)
             elif mesh_subtag.type == b"VERT":
                 self.parse_vertices(mesh_subtag)
             elif mesh_subtag.type == b"NORM":
@@ -29,6 +36,10 @@ class Mesh:
                 self.parse_dlhd(mesh_subtag)
             else:
                 print "Unrecognized MESH subtag : %s" % mesh_subtag.type
+    def parse_info(self, info_tag):
+        self.info = info_tag.binary_data
+    def parse_color(self, color_tag):
+        self.color = color_tag.binary_data
     def parse_name(self, name_tag):
         self.name = name_tag.binary_data[0:name_tag.length-1]
     def parse_vertices(self, vert_tag):
@@ -68,11 +79,30 @@ class Mesh:
         for uv in self.texcoor:
             tobj = "".join([tobj, "vt %f %f\n" % uv])
         return tobj
+    def info2obj(self):
+        if self.info != None:
+            tmp = re.findall("..", self.info.encode('hex'))
+            res = []
+            for e in tmp:
+                res.append(bin(int(e,16))[2:].zfill(8))
+            res = tmp
+            print "mesh info : %s - %s" % (res, self.name)
+    def color2obj(self):
+        if self.color != None:
+            tmp = re.findall("..", self.color.encode('hex'))
+            res = []
+            for e in tmp:
+                res.append(bin(int(e,16))[2:].zfill(8))
+            res = tmp
+            print "mesh color : %s - %s" % (res, self.name)
+    
     def mesh2obj(self):
         if self.vertices == [] or self.normals == [] or self.texcoor == []:
             print "MESH data is missing sections"
             return None
         obj = {}
+        self.info2obj()
+        self.color2obj()
         obj["name"] = self.name
         obj["vertices"] = self.vertices2obj()
         obj["normals"] = self.normals2obj()

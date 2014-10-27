@@ -26,8 +26,8 @@ class Node:
                 self.parse_midx(node_subtag)
             else:
                 print "Unrecognized NODE subtag : %s" % node_subtag.type
-    def parse_info(self, node_tag):
-        self.info = node_tag.binary_data
+    def parse_info(self, info_tag):
+        self.info = info_tag.binary_data
     def parse_name(self, name_tag):
         self.name = name_tag.binary_data[0:name_tag.length-1]
     def parse_name2(self, name_tag):
@@ -57,33 +57,28 @@ class Node:
         #self.binf = struct.unpack(">" + "dd"*1, binf_tag.binary_data[0:binf_tag.length])  # doubles
     def parse_midx(self, midx_tag):
         self.mesh_index = struct.unpack(">L", midx_tag.binary_data[0:4])
+    def tfrm2obj(self):
+        print "\t tfrm : "
+        for t in self.tfrm:
+            print "\t\t %s" % str(t)
+        print "\t\t %s" % str((0.0, 0.0, 0.0, 1.0))
     def inf2obj(self):
-        #print "\t tfrm : "
-        #for t in self.tfrm:
-        #    print "\t\t %s" % str(t)
-        #print "\t\t %s" % str((0.0, 0.0, 0.0, 1.0))
         if self.info != None:
             tmp = re.findall("..", self.info.encode('hex'))
             res = []
             for e in tmp:
                 res.append(bin(int(e,16))[2:].zfill(8))
             res = tmp
-            print "info : %s - %s, %s" % (res, self.name, self.name2)
-        #if self.mesh_index != None:
-        #    print "\t midx : %s" % str(self.mesh_index)
+            print "node info : %s - %s, %s" % (res, self.name, self.name2)
     def binf2obj(self):
-        #print "\t tfrm : "
-        #for t in self.tfrm:
-        #    print "\t\t %s" % str(t)
-        #print "\t\t %s" % str((0.0, 0.0, 0.0, 1.0))
         if self.binf != None:
             tmp = re.findall("..", self.binf.encode('hex'))
             res = []
             for e in tmp:
                 res.append(bin(int(e,16))[2:].zfill(8))
             res = tmp
-            print "binf : %s - %s, %s" % (res, self.name, self.name2)
-            #print "\t binf : %s" % str(self.binf)
-        #if self.mesh_index != None:
-        #    print "\t midx : %s" % str(self.mesh_index)
+            print "node binf : %s - %s, %s" % (res, self.name, self.name2)
+    def midx2obj(self):
+        if self.mesh_index != None:
+            print "node midx : %s - %s, %s" % (str(self.mesh_index), self.name, self.name2)
         
