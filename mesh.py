@@ -1,5 +1,6 @@
 import struct
 import dlhd
+import skin
 import re
 
 class Mesh:
@@ -61,7 +62,7 @@ class Mesh:
             self.texcoor.append((uv[0]/4096.0, uv[1]/4096.0))
             bytes_read += 4
     def parse_skin(self, skin_tag):
-        return 0 # TO-DO
+        self.skin = skin.Skin(skin_tag)
     def parse_dlhd(self, dlhd_tag):
         self.dlhd = dlhd.Dlhd(dlhd_tag)
     def vertices2obj(self):
@@ -101,8 +102,6 @@ class Mesh:
             print "MESH data is missing sections"
             return None
         obj = {}
-        self.info2obj()
-        self.color2obj()
         obj["name"] = self.name
         obj["vertices"] = self.vertices2obj()
         obj["normals"] = self.normals2obj()

@@ -32,8 +32,8 @@ class Chm:
         objs = []
         for mesh in self.mesh_set:
             objs.append(mesh.mesh2obj())
-        for node in self.node_set:
-            node.tfrm2obj()
+        #for node in self.node_set:
+        #    node.tfrm2obj()
         #for node in self.node_set:
         #    node.inf2obj()
         #for node in self.node_set:
