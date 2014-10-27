@@ -1,5 +1,6 @@
 import struct
 import re
+import numpy as np
 
 class Node:
     info = None
@@ -39,9 +40,9 @@ class Node:
         #self.tfrm = struct.unpack(">" + "ii"*6, tfrm_tag.binary_data[0:tfrm_tag.length])  # integers
         #self.tfrm = struct.unpack(">" + "dd"*3, tfrm_tag.binary_data[0:tfrm_tag.length])  # doubles
         bytes_read = 0
-        self.tfrm = []
+        self.tfrm = np.zeros((4,4))
         while bytes_read < tfrm_tag.length:
-            self.tfrm.append(struct.unpack(">4f", tfrm_tag.binary_data[bytes_read:bytes_read+16]))  # floats
+            self.tfrm[bytes_read/16,:] = struct.unpack(">4f", tfrm_tag.binary_data[bytes_read:bytes_read+16])  # floats
             bytes_read += 16
             #self.tfrm.append(struct.unpack(">" + "ffff", tfrm_tag.binary_data[bytes_read:bytes_read+16]))  # floats
             #bytes_read += 16
@@ -49,6 +50,8 @@ class Node:
             #bytes_read += 12
             #self.tfrm.append([i/100.0 for i in struct.unpack(">" + "hhh", tfrm_tag.binary_data[bytes_read:bytes_read+6])])  # floats
             #bytes_read += 6
+        self.tfrm[3,3] = 1.0;
+        print self.tfrm
     def parse_binf(self, binf_tag):
         #self.binf = struct.unpack(">" + "hh"*4, binf_tag.binary_data[0:binf_tag.length])  # shorts
         #self.binf = [i/100.0 for i in struct.unpack(">" + "hh"*4, binf_tag.binary_data[0:binf_tag.length])]  # shorts scaled
@@ -58,7 +61,7 @@ class Node:
     def parse_midx(self, midx_tag):
         self.mesh_index = struct.unpack(">L", midx_tag.binary_data[0:4])
     def tfrm2obj(self):
-        print "\t tfrm : "
+        print "node tfrm - %s, %s : " % (self.name, self.name2)
         for t in self.tfrm:
             print "\t\t %s" % str(t)
         print "\t\t %s" % str((0.0, 0.0, 0.0, 1.0))
