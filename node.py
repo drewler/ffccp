@@ -29,6 +29,7 @@ class Node:
                 print "Unrecognized NODE subtag : %s" % node_subtag.type
     def parse_info(self, info_tag):
         self.info = info_tag.binary_data
+        #print "%s, %s" % (self.info[2:4].encode('hex'), self.info[10:12].encode('hex'))
     def parse_name(self, name_tag):
         self.name = name_tag.binary_data[0:name_tag.length-1]
     def parse_name2(self, name_tag):

@@ -12,6 +12,7 @@ class Chm:
     animation_set = None
     mesh_set = None
     node_set = None
+    skeleton = None
     bank = None
     def __init__(self, root_tag):
         if root_tag.type != b"CHM ":
@@ -21,13 +22,23 @@ class Chm:
         self.animation_set = []
         self.mesh_set = []
         self.node_set = []
+        self.skeleton = {}
         for subtag in self.tagtree.subtags:
             if subtag.type == b"MSST": # Mesh set
                 for mesh_tag in subtag.subtags:
                     self.mesh_set.append(mesh.Mesh(mesh_tag))
             if subtag.type == b"NSET": # Node set
                 for node_tag in subtag.subtags:
-                    self.node_set.append(node.Node(node_tag))
+                    new_node = node.Node(node_tag)
+                    tmp_id = new_node.info[2:4]
+                    tmp_magic = new_node.info[10:12]
+                    if tmp_magic == self.cur_magic:
+                        
+            
+        self.cur_magic = tmp_magic
+        self.cur_id = tmp_id
+        
+                    #self.node_set.append(node.Node(node_tag))
     def chm2obj(self):
         objs = []
         for mesh in self.mesh_set:
