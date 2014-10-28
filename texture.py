@@ -20,9 +20,9 @@ class Texture:
             elif texture_subtag.type == b"IMAG":
                 self.parse_image(texture_subtag)
             else:
-                print "Unrecognized TXTR subtag : %s" % texture_subtag.type
+                print("Unrecognized TXTR subtag : %s" % texture_subtag.type)
     def parse_name(self, name_tag):
-        self.name = name_tag.binary_data[0:name_tag.length-1]
+        self.name = name_tag.binary_data[0:name_tag.length-1].decode("ascii")
     def parse_format(self, format_tag):
         self.format = format_tag.binary_data[0:3]
     def parse_size(self, size_tag):
@@ -32,7 +32,7 @@ class Texture:
             self.image = np.zeros((self.size[1],self.size[0],4), dtype=np.uint8)
             self.cmpr(image_tag)
         else:
-            print "Unrecognized texture format: %s" % self.format
+            print("Unrecognized texture format: %s" % self.format)
     def cmpr_subtile(self, subtile_data, x_offset, y_offset, cur_x, cur_y):
         COLOR0, COLOR1 = struct.unpack(">HH", subtile_data[0:4])
         RGB = [None, None, None, None]
@@ -85,7 +85,7 @@ class Texture:
             bytes_read += 32   
     def texure2img(self):
         if any(v is None for v in [self.name, self.format, self.size, self.image]):
-            print "TXTR data is missing sections"
+            print("TXTR data is missing sections")
             return None
         img = {}
         img["name"] = self.name

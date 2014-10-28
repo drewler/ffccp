@@ -44,4 +44,4 @@ class Tag:
 if __name__ == "__main__":
     fh = open(sys.argv[1], "rb")
     tagroot = Tag(fh)
-    print tagroot
+    print(tagroot)

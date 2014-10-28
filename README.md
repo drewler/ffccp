@@ -1,6 +1,6 @@
 # ffccp
 
-Final Fantasy Crystal Chronicles (Gamecube) file parser. Written in Python 2
+Final Fantasy Crystal Chronicles (Gamecube) file parser. Written in Python 3
 
 ## What is this?
 

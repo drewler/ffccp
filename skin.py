@@ -16,17 +16,12 @@ class Skin:
             #elif skin_subtag.type == b"ONE ":
             #    self.parse_one(skin_subtag)
             else:
-                print "Unrecognized SKIN subtag : %s" % skin_subtag.type
-        #print self.nodelst
-        #for e in self.one:
-        #    print e
+                print("Unrecognized SKIN subtag : %s" % skin_subtag.type)
     def parse_node(self, node_tag):
         self.nodelst.append(struct.unpack('>2H', node_tag.binary_data[0:node_tag.length]))
     def parse_one(self, one_tag):
         bytes_read = 0
-        print one_tag.length
         tmp = []
-        print "####"
         counter = struct.unpack('>h', one_tag.binary_data[bytes_read:bytes_read+2])[0]
         bytes_read += 2
         #mc = collections.Counter(one_tag.binary_data).most_common(20)
@@ -37,7 +32,6 @@ class Skin:
         while bytes_read < one_tag.length:
             read2 = struct.unpack('>H', one_tag.binary_data[bytes_read:bytes_read+2])[0]
             if read2 == (counter + 1):
-                print tmp
                 counter += 1
                 tmp = []
             else:

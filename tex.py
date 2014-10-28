@@ -2,8 +2,8 @@ import struct
 import sys
 import tag
 import texture
-import Image
-import ImageOps
+from PIL import Image
+from PIL import ImageOps
 import os
 
 class Tex:

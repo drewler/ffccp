@@ -36,13 +36,13 @@ class Mesh:
             elif mesh_subtag.type == b"DLHD":
                 self.parse_dlhd(mesh_subtag)
             else:
-                print "Unrecognized MESH subtag : %s" % mesh_subtag.type
+                print("Unrecognized MESH subtag : %s" % mesh_subtag.type)
     def parse_info(self, info_tag):
         self.info = info_tag.binary_data
     def parse_color(self, color_tag):
         self.color = color_tag.binary_data
     def parse_name(self, name_tag):
-        self.name = name_tag.binary_data[0:name_tag.length-1]
+        self.name = name_tag.binary_data[0:name_tag.length-1].decode("ascii")
     def parse_vertices(self, vert_tag):
         bytes_read = 0
         while bytes_read < vert_tag.length:
@@ -87,7 +87,7 @@ class Mesh:
             for e in tmp:
                 res.append(bin(int(e,16))[2:].zfill(8))
             res = tmp
-            print "mesh info : %s - %s" % (res, self.name)
+            print("mesh info : %s - %s" % (res, self.name))
     def color2obj(self):
         if self.color != None:
             tmp = re.findall("..", self.color.encode('hex'))
@@ -95,11 +95,11 @@ class Mesh:
             for e in tmp:
                 res.append(bin(int(e,16))[2:].zfill(8))
             res = tmp
-            print "mesh color : %s - %s" % (res, self.name)
+            print("mesh color : %s - %s" % (res, self.name))
     
     def mesh2obj(self):
         if self.vertices == [] or self.normals == [] or self.texcoor == []:
-            print "MESH data is missing sections"
+            print("MESH data is missing sections")
             return None
         obj = {}
         obj["name"] = self.name

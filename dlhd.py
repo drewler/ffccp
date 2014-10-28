@@ -10,7 +10,7 @@ class Dlhd:
             if dlhd_subtag.type == b"DLST":
                 self.parse_dlst(dlhd_subtag)
             else:
-                print "Unrecognized DLHD subtag : %s" % dlhd_subtag.type
+                print("Unrecognized DLHD subtag : %s" % dlhd_subtag.type)
     def parse_dlst(self, dlst_tag):
         bytes_read = 0
         lst = []
@@ -63,7 +63,7 @@ class Dlhd:
         return fobj
     def dlhd2obj(self, mesh):
         if self.dlsts == []:
-            print "DLHD data is missing sections"
+            print("DLHD data is missing sections")
             return None
         dobj = ""
         gcount = 0
