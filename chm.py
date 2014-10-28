@@ -3,6 +3,7 @@ import tag
 import mesh
 import node
 import os
+import struct
 
 class Chm:
     tagtree = None
@@ -13,6 +14,7 @@ class Chm:
     mesh_set = None
     node_set = None
     skeleton = None
+    cur_node = None
     bank = None
     def __init__(self, root_tag):
         if root_tag.type != b"CHM ":
@@ -22,7 +24,9 @@ class Chm:
         self.animation_set = []
         self.mesh_set = []
         self.node_set = []
-        self.skeleton = {}
+        self.skeleton = { "parent" : None, "id" : 0, "node" : None, "children" : [] }
+        self.cur_node = self.skeleton
+        skelstart = False
         for subtag in self.tagtree.subtags:
             if subtag.type == b"MSST": # Mesh set
                 for mesh_tag in subtag.subtags:
@@ -30,15 +34,45 @@ class Chm:
             if subtag.type == b"NSET": # Node set
                 for node_tag in subtag.subtags:
                     new_node = node.Node(node_tag)
-                    tmp_id = new_node.info[2:4]
+                    tmp_id = struct.unpack(">H", new_node.info[2:4])[0]
                     tmp_magic = new_node.info[10:12]
-                    if tmp_magic == self.cur_magic:
+                    if not skelstart:
                         
-            
-        self.cur_magic = tmp_magic
-        self.cur_id = tmp_id
+                        if tmp_id == 1:
+                            self.cur_node["node"] = new_node
+                            self.cur_node["id"] = tmp_id
+                            skelstart = True
+                    else:
+                        
+                        if tmp_magic == self.cur_node["node"].info[10:12]:
+                            # Find node
+                            n = self.find_node(self.skeleton["children"], tmp_id)
+                            if n != None:
+                                self.cur_node = n
+                        else:
+                            c = { "parent" : self.cur_node, "id" : tmp_id, "node" : new_node, "children" : [] }
+                            self.cur_node["children"].append(c)
+                            self.cur_node = c   
+                        
+                    self.node_set.append(node.Node(node_tag))
+        self.print_skeleton()
+    def print_skeleton(self):
+        self.print_node(self.skeleton)
+    def print_node(self, e, depth = 0):
+        print "%s>%s" % ("-" * depth, e["node"].name)
+        if e["children"] != []:
+            for c in e["children"]:
+                self.print_node(c, depth+1)
+    def find_node(self, level, id):
+        for e in level:
+            if e["id"] == id:
+                return e
+            else:
+                t = self.find_node(e["children"], id)
+                if t != None:
+                    return t
+        return None
         
-                    #self.node_set.append(node.Node(node_tag))
     def chm2obj(self):
         objs = []
         for mesh in self.mesh_set:
