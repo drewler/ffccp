@@ -1,5 +1,4 @@
 import sys
-sys.path.append("D:\\git\\ffccp")
 import tag
 import mesh
 import node
@@ -86,25 +85,6 @@ class Chm:
         #    node.binf2obj()
         return objs
 
-try:
-    fn = os.getenv("f")
-    fh = open(fn, "rb")
-    if (fn[-3:] == "chm") and not os.path.exists(fn[:-4]):
-        os.makedirs(fn[:-4])
-    tagroot = tag.Tag(fh)
-    chm = Chm(tagroot)
-    objs = chm.chm2obj()
-    for obj in objs:
-        fo = open("%s/%s.obj" % (fn[:-4], obj["name"]), "w+")
-        fo.write(obj["vertices"])
-        fo.write(obj["normals"])
-        fo.write(obj["uv"])
-        fo.write(obj["faces"])
-        fo.close()
-    sys.exit(0)
-except Exception as e:
-    print(e)
-    sys.exit(-1)
 # If called as script, write obj file for each mesh
 if __name__ == "__main__":
     fh = open(sys.argv[1], "rb")
