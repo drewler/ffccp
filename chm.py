@@ -5,8 +5,6 @@ import node
 import os
 import struct
 
-
-
 class Chm:
     tagtree = None
     info = None
@@ -62,7 +60,7 @@ class Chm:
         print("%s %s" % ("x" * depth, e["node"].name))
         if e["children"] != []:
             for c in e["children"]:
-                self.print_node(c, depth + 1)
+                self.print_skel(c, depth + 1)
     def find_node(self, level, id):
         for e in level:
             if e["id"] == id:
@@ -76,7 +74,6 @@ class Chm:
         objs = []
         for mesh in self.mesh_set:
             objs.append(mesh.mesh2obj())
-        #self.print_skel(self.skeleton)
         #for node in self.node_set:
         #    node.tfrm2obj()
         #for node in self.node_set:
