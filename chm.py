@@ -74,6 +74,7 @@ class Chm:
         objs = []
         for mesh in self.mesh_set:
             objs.append(mesh.mesh2obj())
+        self.print_skel(self.skeleton)
         #for node in self.node_set:
         #    node.tfrm2obj()
         #for node in self.node_set:
