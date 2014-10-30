@@ -24,7 +24,6 @@ class Chm:
         self.mesh_set = []
         self.node_set = []
         self.skeleton = { "parent" : None, "id" : None, "node" : None, "children" : [] }
-        
         for subtag in self.tagtree.subtags:
             if subtag.type == b"MSST": # Mesh set
                 for mesh_tag in subtag.subtags:
@@ -72,7 +71,7 @@ class Chm:
         return None 
     def chm2obj(self):
         objs = []
-        self.print_skel(self.skeleton)
+        # self.print_skel(self.skeleton)
         for mesh in self.mesh_set:
             objs.append(mesh.mesh2obj())
         return objs

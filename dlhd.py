@@ -37,9 +37,32 @@ class Dlhd:
                 raise Exception("Unknown DLST type: %s\n" % hex(dlst["ltype"]))
             lst.append(dlst)
         self.dlsts.append(lst)
+    def to_faces(self):
+        faces = []
+        for lst in dlst:
+            if (hex(lst["ltype"]) in ('0x98', '0x99')):
+                for i in range(1, len(lst["data"])-1):
+                    fc0 = lst["data"][i-(i%2)][0]+1
+                    fc1 = lst["data"][i-((i+1)%2)][0]+1
+                    fc2 = lst["data"][i+1][0]+1
+                    faces.append((fc0, fc1, fc2))
+            elif (hex(lst["ltype"]) in ('0x90', '0x91')):
+                for i in range(0, len(lst["data"])-2, 3):
+                    fc0 = lst["data"][i+2][0]+1
+                    fc1 = lst["data"][i+1][0]+1
+                    fc2 = lst["data"][i][0]+1
+                    faces.append((fc0, fc1, fc2))
+            elif (hex(lst["ltype"]) in ('0x92', '0x9a')):
+                for i in range(1, len(lst["data"])-1):
+                    fc0 = lst["data"][i-(i%2)][0]+1
+                    fc1 = lst["data"][i-((i+1)%2)][0]+1
+                    fc2 = lst["data"][i+1][0]+1
+                    faces.append((fc0, fc1, fc2))
+        return faces
     def dlst2obj(self, dlst):
         fobj = ""
         for lst in dlst:
+            fobj = "".join([fobj, "# dlst type %s\n" % hex(lst["ltype"])])
             if (hex(lst["ltype"]) in ('0x98', '0x99')):
                 for i in range(1, len(lst["data"])-1):
                     fc0 = "%i/%i/%i" % (lst["data"][i-(i%2)][0]+1, lst["data"][i-(i%2)][3]+1, lst["data"][i-(i%2)][1]+1)

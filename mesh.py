@@ -96,7 +96,8 @@ class Mesh:
                 res.append(bin(int(e,16))[2:].zfill(8))
             res = tmp
             print("mesh color : %s - %s" % (res, self.name))
-    
+    def faces(self):
+        return self.dlhd.to_faces()
     def mesh2obj(self):
         if self.vertices == [] or self.normals == [] or self.texcoor == []:
             print("MESH data is missing sections")

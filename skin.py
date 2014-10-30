@@ -25,8 +25,8 @@ class Skin:
             # print("\t%s" % str(e["elems"]))
             # for w in e["elems"]:
                 # print("\t%s" % hex(w))
-        for i, n in enumerate(self.nodelst):
-            print("node %i - bone: %i, vertices: %s" % (i, n["bone"], n["vertices"]))
+        # for i, n in enumerate(self.nodelst):
+            # print("node %i - bone: %s, vertices: %s" % (i, hex(n["bone"]), n["vertices"]))
     def parse_node(self, node_tag):
         bone = struct.unpack('>I', node_tag.binary_data[0:node_tag.length])[0]
         new_sknode = { "bone" : bone, "vertices" : [] }
