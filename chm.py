@@ -57,7 +57,7 @@ class Chm:
                 cur_id += 1
             self.node_set.append(node.Node(node_tag))
     def print_skel(self, e, depth = 0):
-        print("%s %s" % ("x" * depth, e["node"].name))
+        print("%s %s (id: %s)" % ("x" * depth, e["node"].name, hex(e["id"])))
         if e["children"] != []:
             for c in e["children"]:
                 self.print_skel(c, depth + 1)
@@ -72,6 +72,7 @@ class Chm:
         return None 
     def chm2obj(self):
         objs = []
+        self.print_skel(self.skeleton)
         for mesh in self.mesh_set:
             objs.append(mesh.mesh2obj())
         return objs
