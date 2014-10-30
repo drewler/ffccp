@@ -8,7 +8,7 @@ import struct
 class Chm:
     tagtree = None
     info = None
-    quan = None
+    scale = None
     material_set = None
     animation_set = None
     mesh_set = None
@@ -25,10 +25,12 @@ class Chm:
         self.node_set = []
         self.skeleton = { "parent" : None, "id" : None, "node" : None, "children" : [] }
         for subtag in self.tagtree.subtags:
-            if subtag.type == b"MSST": # Mesh set
+            if subtag.type == b"QUAN":
+                self.scale = 1.0/(2.0**struct.unpack(">I",subtag.binary_data[0:4])[0])
+            elif subtag.type == b"MSST": # Mesh set
                 for mesh_tag in subtag.subtags:
                     self.mesh_set.append(mesh.Mesh(mesh_tag))
-            if subtag.type == b"NSET": # Node set
+            elif subtag.type == b"NSET": # Node set
                 self.parse_nodeset(subtag)
     def parse_nodeset(self, subtag):
         skelstart = False
