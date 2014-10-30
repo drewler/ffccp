@@ -19,27 +19,31 @@ class Skin:
                self.parse_one(skin_subtag)
             else:
                 print("Unrecognized SKIN subtag : %s" % skin_subtag.type)
-        #print("m1: %s - m2: %s" % (self.max1, self.max2))
+        print("m1: %s - m2: %s" % (self.max1, self.max2))
         for e in self.one:
-            print("> %i - nel: %i" % (e["gid"], e["nel"]))
+            print("> %s - nel: %i" % (e["gid"], e["nel"]))
             print("\t%s" % str(e["elems"]))
+            # for w in e["elems"]:
+                # print("\t%s" % hex(w))
     def parse_node(self, node_tag):
         self.nodelst.append(struct.unpack('>2H', node_tag.binary_data[0:node_tag.length]))
     def parse_one(self, one_tag):
         print(one_tag.length)
         bytes_read = 0
+        # xx => skin node index
+        # xx => vertex index
+        # xx => number of following elements
+        # xx * nel => elements (vertex normals)
         while bytes_read < one_tag.length:
-            gid = struct.unpack('>I', one_tag.binary_data[bytes_read:bytes_read+4])[0]
+            gid = struct.unpack('>2H', one_tag.binary_data[bytes_read:bytes_read+4])
             bytes_read += 4
             nel = struct.unpack('>H', one_tag.binary_data[bytes_read:bytes_read+2])[0]
             bytes_read += 2
             elems = struct.unpack('>%iH' % nel, one_tag.binary_data[bytes_read:bytes_read+nel*2])
             bytes_read += nel*2
             self.one.append({"gid" : gid, "nel" : nel, "elems" : elems})
-            #print(bytes_read)
-            #c1, c2 = struct.unpack('>2H', one_tag.binary_data[bytes_read:bytes_read+4])
-            #bytes_read += 4
-            #if c1 > self.max1:
-            #    self.max1 = c1
-            #if c2 > self.max2:
-            #    self.max2 = c2
+            # if gid[0] > self.max1:
+                # self.max1 = gid[0]
+            # for e in elems:
+                # if e > self.max2:
+                    # self.max2 = e
