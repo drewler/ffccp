@@ -101,7 +101,7 @@ class Chm:
         objs = []
         # self.print_skel(self.skeleton)
         for mesh in self.mesh_set:
-            objs.append(mesh.mesh2obj())
+            objs.append(mesh.mesh2obj(self.scale))
         return objs
 
 # If called as script, write obj file for each mesh

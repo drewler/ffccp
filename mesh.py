@@ -53,7 +53,7 @@ class Mesh:
         bytes_read = 0
         while bytes_read < norm_tag.length:
             normal = struct.unpack('>hhh', norm_tag.binary_data[bytes_read:bytes_read+6])
-            self.normals.append((normal[0]/128.0, normal[1]/128.0, normal[2]/128.0))
+            self.normals.append((normal[0], normal[1], normal[2]))
             bytes_read += 6
     def parse_uv(self, uv_tag):
         bytes_read = 0
@@ -65,15 +65,15 @@ class Mesh:
         self.skin = skin.Skin(skin_tag)
     def parse_dlhd(self, dlhd_tag):
         self.dlhd = dlhd.Dlhd(dlhd_tag)
-    def vertices2obj(self):
+    def vertices2obj(self, scale):
         vobj = ""
         for vertex in self.vertices:
-            vobj = "".join([vobj, "v %f %f %f\n" % vertex])
+            vobj = "".join([vobj, "v %f %f %f\n" % (vertex[0]/scale, vertex[1]/scale, vertex[2]/scale)])
         return vobj
-    def normals2obj(self):
+    def normals2obj(self, scale):
         nobj = ""
         for normal in self.normals:
-            nobj = "".join([nobj, "vn %f %f %f\n" % normal])
+            nobj = "".join([nobj, "vn %f %f %f\n" % (normal[0]/scale, normal[1]/scale, normal[2]/scale)])
         return nobj
     def texcoor2obj(self):
         tobj = ""
@@ -98,14 +98,14 @@ class Mesh:
             print("mesh color : %s - %s" % (res, self.name))
     def faces(self):
         return self.dlhd.to_faces()
-    def mesh2obj(self):
+    def mesh2obj(self, scale):
         if self.vertices == [] or self.normals == [] or self.texcoor == []:
             print("MESH data is missing sections")
             return None
         obj = {}
         obj["name"] = self.name
-        obj["vertices"] = self.vertices2obj()
-        obj["normals"] = self.normals2obj()
+        obj["vertices"] = self.vertices2obj(scale)
+        obj["normals"] = self.normals2obj(scale)
         obj["uv"] = self.texcoor2obj()
         obj["faces"] = self.dlhd.dlhd2obj(self)
         return obj

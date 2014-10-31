@@ -30,6 +30,15 @@ class Cha:
                     elif aset_tag.type == b"BANK":
                         self.parse_anim_bank(aset_tag)
         print("max: %i (%s)" % (self.max, hex(self.max)))
+        sset = []
+        for node in self.nodes:
+            for e in node["data"]:
+                sset.append(e)
+        
+        #sset = set(sset)
+        sset.sort()
+        for e in sset:
+            print(e)
     def parse_anim_frames(self, frame_tag):
         self.frames = struct.unpack(">i", frame_tag.binary_data)
     def parse_anim_info(self, info_tag):
