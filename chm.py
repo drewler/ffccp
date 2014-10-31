@@ -4,6 +4,16 @@ import mesh
 import node
 import os
 import struct
+import math
+
+def normalize(v):
+    vmag = math.sqrt(v[0]**v[0] + v[1]**v[1] + v[2]**v[2])
+    return [ v[i]/vmag  for i in range(len(v)) ]
+
+def q_to_axisangle(q):
+    w, v = q[3], q[:3]
+    theta = math.acos(w) * 2.0
+    return normalize(v), theta
 
 class Chm:
     tagtree = None
@@ -25,13 +35,29 @@ class Chm:
         self.node_set = []
         self.skeleton = { "parent" : None, "id" : None, "node" : None, "children" : [] }
         for subtag in self.tagtree.subtags:
-            if subtag.type == b"QUAN":
-                self.scale = 1.0/(2.0**struct.unpack(">I",subtag.binary_data[0:4])[0])
+            if subtag.type == b"INFO":
+                self.parse_info(subtag)
+            elif subtag.type == b"QUAN":
+                self.parse_quan(subtag)
             elif subtag.type == b"MSST": # Mesh set
                 for mesh_tag in subtag.subtags:
                     self.mesh_set.append(mesh.Mesh(mesh_tag))
             elif subtag.type == b"NSET": # Node set
                 self.parse_nodeset(subtag)
+    def parse_info(self, info_tag):
+        self.info = struct.unpack(">%if" % (info_tag.length/4.0), info_tag.binary_data)
+        print("info: %s" % str(self.info))
+        info2 = []
+        info3 = []
+        for e in self.info:
+            info2.append(math.degrees(e))
+            info3.append(90*e)
+        print(info2)
+        print(info3)
+        print("quat: %s" % str(q_to_axisangle((self.info[0],self.info[1],self.info[2],self.info[3]))))
+    def parse_quan(self, quan_tag):
+        self.scale = 1.0/(2.0**struct.unpack(">I",quan_tag.binary_data[0:4])[0])
+        print("quan: %s" % str(struct.unpack(">%ii" % (quan_tag.length/4.0), quan_tag.binary_data)))
     def parse_nodeset(self, subtag):
         skelstart = False
         cur_id = 0
