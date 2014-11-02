@@ -52,9 +52,9 @@ class Chm:
         for e in self.info:
             info2.append(math.degrees(e))
             info3.append(90*e)
-        print(info2)
-        print(info3)
-        print("quat: %s" % str(q_to_axisangle((self.info[0],self.info[1],self.info[2],self.info[3]))))
+        # print(info2)
+        # print(info3)
+        # print("quat: %s" % str(q_to_axisangle((self.info[0],self.info[1],self.info[2],self.info[3]))))
     def parse_quan(self, quan_tag):
         self.scale = 1.0/(2.0**struct.unpack(">I",quan_tag.binary_data[0:4])[0])
         print("quan: %s" % str(struct.unpack(">%ii" % (quan_tag.length/4.0), quan_tag.binary_data)))

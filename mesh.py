@@ -38,7 +38,7 @@ class Mesh:
             else:
                 print("Unrecognized MESH subtag : %s" % mesh_subtag.type)
     def parse_info(self, info_tag):
-        self.info = info_tag.binary_data
+        self.info = struct.unpack(">%iI" % (info_tag.length/4.0), info_tag.binary_data)
     def parse_color(self, color_tag):
         self.color = color_tag.binary_data
     def parse_name(self, name_tag):
@@ -68,12 +68,12 @@ class Mesh:
     def vertices2obj(self, scale):
         vobj = ""
         for vertex in self.vertices:
-            vobj = "".join([vobj, "v %f %f %f\n" % (vertex[0]/scale, vertex[1]/scale, vertex[2]/scale)])
+            vobj = "".join([vobj, "v %f %f %f\n" % (vertex[0]*scale, vertex[1]*scale, vertex[2]*scale)])
         return vobj
     def normals2obj(self, scale):
         nobj = ""
         for normal in self.normals:
-            nobj = "".join([nobj, "vn %f %f %f\n" % (normal[0]/scale, normal[1]/scale, normal[2]/scale)])
+            nobj = "".join([nobj, "vn %f %f %f\n" % (normal[0]*scale, normal[1]*scale, normal[2]*scale)])
         return nobj
     def texcoor2obj(self):
         tobj = ""
@@ -96,6 +96,11 @@ class Mesh:
                 res.append(bin(int(e,16))[2:].zfill(8))
             res = tmp
             print("mesh color : %s - %s" % (res, self.name))
+    def vertex(self):
+        verts = []
+        for v in self.vertices:
+            verts.append((v[0], v[2], v[1]))
+        return verts
     def faces(self):
         return self.dlhd.to_faces()
     def mesh2obj(self, scale):
