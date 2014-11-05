@@ -1,5 +1,6 @@
 import sys
 import tag
+import matl
 import mesh
 import node
 import os
@@ -19,8 +20,7 @@ class Chm:
     tagtree = None
     info = None
     scale = None
-    material_set = None
-    animation_set = None
+    matl_set = None
     mesh_set = None
     node_set = None
     skeleton = None
@@ -29,8 +29,7 @@ class Chm:
         if root_tag.type != b"CHM ":
             raise Exception("File is not a valid CHM file!")
         self.tagtree = root_tag
-        self.material_set = []
-        self.animation_set = []
+        self.matl_set = []
         self.mesh_set = []
         self.node_set = []
         self.skeleton = { "parent" : None, "id" : None, "node" : None, "children" : [] }
@@ -39,22 +38,24 @@ class Chm:
                 self.parse_info(subtag)
             elif subtag.type == b"QUAN":
                 self.parse_quan(subtag)
+            elif subtag.type == b"MSET":
+                for matl_tag in subtag.subtags:
+                    self.matl_set.append(matl.Matl(matl_tag))
             elif subtag.type == b"MSST": # Mesh set
                 for mesh_tag in subtag.subtags:
                     self.mesh_set.append(mesh.Mesh(mesh_tag))
             elif subtag.type == b"NSET": # Node set
                 self.parse_nodeset(subtag)
+            else:
+                print("Unrecognized CHM subtag : %s" % subtag.type)
     def parse_info(self, info_tag):
         self.info = struct.unpack(">%if" % (info_tag.length/4.0), info_tag.binary_data)
-        print("info: %s" % str(self.info))
+        # print("info: %s" % str(self.info))
         info2 = []
         info3 = []
         for e in self.info:
             info2.append(math.degrees(e))
             info3.append(90*e)
-        # print(info2)
-        # print(info3)
-        # print("quat: %s" % str(q_to_axisangle((self.info[0],self.info[1],self.info[2],self.info[3]))))
     def parse_quan(self, quan_tag):
         self.scale = 1.0/(2.0**struct.unpack(">I",quan_tag.binary_data[0:4])[0])
         print("quan: %s" % str(struct.unpack(">%ii" % (quan_tag.length/4.0), quan_tag.binary_data)))

@@ -26,11 +26,17 @@ class Dlhd:
             if (hex(dlst["ltype"]) in ('0x98', '0x99')) or (hex(dlst["ltype"]) in ('0x90', '0x91')):
                 while dlst_count < dlst["size"]:
                     dlst["data"].append(struct.unpack('>HHHH', dlst_tag.binary_data[bytes_read:bytes_read+8]))
+                    tmp = struct.unpack('>HHHH', dlst_tag.binary_data[bytes_read:bytes_read+8])
+                    # if tmp[2] != 0:
+                        # print(tmp)
                     bytes_read += 8
                     dlst_count += 1
             elif (hex(dlst["ltype"]) in ('0x92', '0x9a')):
                 while dlst_count < dlst["size"]:
                     dlst["data"].append(struct.unpack('>HHHHH', dlst_tag.binary_data[bytes_read:bytes_read+10]))
+                    tmp = struct.unpack('>HHHHH', dlst_tag.binary_data[bytes_read:bytes_read+10])
+                    # if tmp[2] != 0:
+                    # print(tmp)
                     bytes_read += 10
                     dlst_count += 1
             else:
