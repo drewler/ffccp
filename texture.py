@@ -4,7 +4,7 @@ import numpy as np
 
 class Texture:
     name = None
-    format = None
+    fmt = None
     size = None
     image = None
     def __init__(self, texture_tag):
@@ -14,7 +14,7 @@ class Texture:
             if texture_subtag.type == b"NAME":
                 self.parse_name(texture_subtag)
             elif texture_subtag.type == b"FMT ":
-                self.parse_format(texture_subtag)
+                self.parse_fmt(texture_subtag)
             elif texture_subtag.type == b"SIZE":
                 self.parse_size(texture_subtag)
             elif texture_subtag.type == b"IMAG":
@@ -23,16 +23,16 @@ class Texture:
                 print("Unrecognized TXTR subtag : %s" % texture_subtag.type)
     def parse_name(self, name_tag):
         self.name = name_tag.binary_data[0:name_tag.length-1].decode("ascii")
-    def parse_format(self, format_tag):
-        self.format = format_tag.binary_data[0:3]
+    def parse_fmt(self, fmt_tag):
+        self.fmt = fmt_tag.binary_data[0:3]
     def parse_size(self, size_tag):
         self.size = struct.unpack(">LL", size_tag.binary_data[0:8])
     def parse_image(self, image_tag):
-        if self.format == b"\x06\x01\x01": # CMPR
+        if self.fmt == b"\x06\x01\x01": # CMPR
             self.image = np.zeros((self.size[1],self.size[0],4), dtype=np.uint8)
             self.cmpr(image_tag)
         else:
-            print("Unrecognized texture format: %s" % self.format)
+            print("Unrecognized texture fmt: %s" % self.fmt)
     def cmpr_subtile(self, subtile_data, x_offset, y_offset, cur_x, cur_y):
         COLOR0, COLOR1 = struct.unpack(">HH", subtile_data[0:4])
         RGB = [None, None, None, None]
@@ -84,7 +84,7 @@ class Texture:
                 cur_y = cur_y + 8
             bytes_read += 32   
     def texure2img(self):
-        if any(v is None for v in [self.name, self.format, self.size, self.image]):
+        if any(v is None for v in [self.name, self.fmt, self.size, self.image]):
             print("TXTR data is missing sections")
         img = {}
         img["name"] = self.name
