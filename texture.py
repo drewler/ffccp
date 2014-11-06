@@ -86,7 +86,6 @@ class Texture:
     def texure2img(self):
         if any(v is None for v in [self.name, self.format, self.size, self.image]):
             print("TXTR data is missing sections")
-            return None
         img = {}
         img["name"] = self.name
         img["data"] = self.image

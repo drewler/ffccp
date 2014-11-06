@@ -44,8 +44,9 @@ class Dlhd:
             lst.append(dlst)
         self.dlsts.append(lst)
     def to_faces(self):
-        faces = []
+        fset = []
         for dlst in self.dlsts:
+            faces = []
             for lst in dlst:
                 if (hex(lst["ltype"]) in ('0x98', '0x99')):
                     for i in range(1, len(lst["data"])-1):
@@ -65,7 +66,8 @@ class Dlhd:
                         fc1 = lst["data"][i-((i+1)%2)][0]
                         fc2 = lst["data"][i+1][0]
                         faces.append((fc0, fc1, fc2))
-        return faces
+            fset.append(faces)    
+        return fset
     def dlst2obj(self, dlst):
         fobj = ""
         for lst in dlst:

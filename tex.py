@@ -23,8 +23,7 @@ class Tex:
         imgs = []
         for texture in self.texture_set:
             tex = texture.texure2img()
-            if tex != None:
-                imgs.append(tex)
+            imgs.append(tex)
         return imgs
         
 # If called as script, write img file for each texture
