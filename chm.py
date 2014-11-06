@@ -7,15 +7,6 @@ import os
 import struct
 import math
 
-def normalize(v):
-    vmag = math.sqrt(v[0]**v[0] + v[1]**v[1] + v[2]**v[2])
-    return [ v[i]/vmag  for i in range(len(v)) ]
-
-def q_to_axisangle(q):
-    w, v = q[3], q[:3]
-    theta = math.acos(w) * 2.0
-    return normalize(v), theta
-
 class Chm:
     tagtree = None
     info = None
@@ -38,7 +29,7 @@ class Chm:
                 self.parse_info(subtag)
             elif subtag.type == b"QUAN":
                 self.parse_quan(subtag)
-            elif subtag.type == b"MSET":
+            elif subtag.type == b"MSET": # Material set
                 for matl_tag in subtag.subtags:
                     self.matl_set.append(matl.Matl(matl_tag))
             elif subtag.type == b"MSST": # Mesh set
@@ -51,14 +42,9 @@ class Chm:
     def parse_info(self, info_tag):
         self.info = struct.unpack(">%if" % (info_tag.length/4.0), info_tag.binary_data)
         # print("info: %s" % str(self.info))
-        info2 = []
-        info3 = []
-        for e in self.info:
-            info2.append(math.degrees(e))
-            info3.append(90*e)
     def parse_quan(self, quan_tag):
         self.scale = 1.0/(2.0**struct.unpack(">I",quan_tag.binary_data[0:4])[0])
-        print("quan: %s" % str(struct.unpack(">%ii" % (quan_tag.length/4.0), quan_tag.binary_data)))
+        # print("quan: %s" % str(struct.unpack(">%ii" % (quan_tag.length/4.0), quan_tag.binary_data)))
     def parse_nodeset(self, subtag):
         skelstart = False
         cur_id = 0
