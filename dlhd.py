@@ -13,7 +13,8 @@ class Dlhd:
                 print("Unrecognized DLHD subtag : %s" % dlhd_subtag.type)
     def parse_dlst(self, dlst_tag):
         bytes_read = 0
-        lst = []
+        lst = { "matidx" : 0, "data" : [] }
+        lst["matidx"] = struct.unpack('>H', dlst_tag.binary_data[0:2])[0]
         while bytes_read < dlst_tag.length:
             dlst = { "ltype" : 0, "size" : 0, "data" : [] }
             dlst["ltype"] = struct.unpack('>B', dlst_tag.binary_data[bytes_read:bytes_read+1])[0]
@@ -26,28 +27,22 @@ class Dlhd:
             if (hex(dlst["ltype"]) in ('0x98', '0x99')) or (hex(dlst["ltype"]) in ('0x90', '0x91')):
                 while dlst_count < dlst["size"]:
                     dlst["data"].append(struct.unpack('>HHHH', dlst_tag.binary_data[bytes_read:bytes_read+8]))
-                    tmp = struct.unpack('>HHHH', dlst_tag.binary_data[bytes_read:bytes_read+8])
-                    # if tmp[2] != 0:
-                        # print(tmp)
                     bytes_read += 8
                     dlst_count += 1
             elif (hex(dlst["ltype"]) in ('0x92', '0x9a')):
                 while dlst_count < dlst["size"]:
                     dlst["data"].append(struct.unpack('>HHHHH', dlst_tag.binary_data[bytes_read:bytes_read+10]))
-                    tmp = struct.unpack('>HHHHH', dlst_tag.binary_data[bytes_read:bytes_read+10])
-                    # if tmp[2] != 0:
-                    # print(tmp)
                     bytes_read += 10
                     dlst_count += 1
             else:
                 raise Exception("Unknown DLST type: %s\n" % hex(dlst["ltype"]))
-            lst.append(dlst)
+            lst["data"].append(dlst)
         self.dlsts.append(lst)
     def to_faces(self):
         fset = []
         for dlst in self.dlsts:
-            dl = []
-            for lst in dlst:
+            dl = { "matidx" : dlst["matidx"], "data" : [] }
+            for lst in dlst["data"]:
                 e = { "faces" : [], "uv" : [], "normals" : [], "type" : hex(lst["ltype"]) }
                 if (hex(lst["ltype"]) in ('0x98', '0x99')):
                     for i in range(1, len(lst["data"])-1):
@@ -76,7 +71,7 @@ class Dlhd:
                             e["faces"].append((fc0[0], fc1[0], fc2[0]))
                             e["normals"].append((fc0[1], fc1[1], fc2[1]))
                             e["uv"].append((fc0[3], fc1[3], fc2[3]))
-                dl.append(e)    
+                dl["data"].append(e)    
             fset.append(dl)
         return fset
     def dlst2obj(self, dlst):
