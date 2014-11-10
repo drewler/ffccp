@@ -48,28 +48,34 @@ class Dlhd:
         for dlst in self.dlsts:
             dl = []
             for lst in dlst:
-                e = { "faces" : [], "uv" : [], "type" : hex(lst["ltype"]) }
+                e = { "faces" : [], "uv" : [], "normals" : [], "type" : hex(lst["ltype"]) }
                 if (hex(lst["ltype"]) in ('0x98', '0x99')):
                     for i in range(1, len(lst["data"])-1):
                         fc0 = lst["data"][i-(i%2)]
                         fc1 = lst["data"][i-((i+1)%2)]
                         fc2 = lst["data"][i+1]
-                        e["faces"].append((fc0[0], fc1[0], fc2[0]))
-                        e["uv"].append((fc0[3], fc1[3], fc2[3]))
+                        if len(set([fc0[0], fc1[0], fc2[0]])) == 3:
+                            e["faces"].append((fc0[0], fc1[0], fc2[0]))
+                            e["normals"].append((fc0[1], fc1[1], fc2[1]))
+                            e["uv"].append((fc0[3], fc1[3], fc2[3]))
                 elif (hex(lst["ltype"]) in ('0x90', '0x91')):
                     for i in range(0, len(lst["data"])-2, 3):
                         fc0 = lst["data"][i]
                         fc1 = lst["data"][i+1]
                         fc2 = lst["data"][i+2]
-                        e["faces"].append((fc0[0], fc1[0], fc2[0]))
-                        e["uv"].append((fc0[3], fc1[3], fc2[3]))
+                        if len(set([fc0[0], fc1[0], fc2[0]])) == 3:
+                            e["faces"].append((fc0[0], fc1[0], fc2[0]))
+                            e["normals"].append((fc0[1], fc1[1], fc2[1]))
+                            e["uv"].append((fc0[3], fc1[3], fc2[3]))
                 elif (hex(lst["ltype"]) in ('0x92', '0x9a')):
                     for i in range(1, len(lst["data"])-1):
                         fc0 = lst["data"][i-(i%2)]
                         fc1 = lst["data"][i-((i+1)%2)]
                         fc2 = lst["data"][i+1]
-                        e["faces"].append((fc0[0], fc1[0], fc2[0]))
-                        e["uv"].append((fc0[3], fc1[3], fc2[3]))
+                        if len(set([fc0[0], fc1[0], fc2[0]])) == 3:
+                            e["faces"].append((fc0[0], fc1[0], fc2[0]))
+                            e["normals"].append((fc0[1], fc1[1], fc2[1]))
+                            e["uv"].append((fc0[3], fc1[3], fc2[3]))
                 dl.append(e)    
             fset.append(dl)
         return fset

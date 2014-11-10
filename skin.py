@@ -8,9 +8,11 @@ class Skin:
     one = None
     max1 = None
     max2 = None
+    normals = None
     def __init__(self, skin_tag):
         self.nodelst = []
         self.one = []
+        self.normals = {}
         self.max1 = self.max2 = 0
         for skin_subtag in skin_tag.subtags:
             if skin_subtag.type == b"NODE":
@@ -19,6 +21,7 @@ class Skin:
                self.parse_one(skin_subtag)
             else:
                 print("Unrecognized SKIN subtag : %s" % skin_subtag.type)
+        # print(self.normals)
         # print("m1: %s - m2: %s" % (self.max1, self.max2))
         # for e in self.one:
             # print("> %s - nel: %i" % (e["gid"], e["nel"]))
@@ -45,6 +48,8 @@ class Skin:
             elems = struct.unpack('>%iH' % nel, one_tag.binary_data[bytes_read:bytes_read+nel*2])
             bytes_read += nel*2
             self.nodelst[gid[0]]["vertices"].append(gid[1])
+            # print(gid[1])
+            self.normals[gid[1]] = list(elems)
             #self.one.append({"gid" : gid, "nel" : nel, "elems" : elems})
             # if gid[0] > self.max1:
                 # self.max1 = gid[0]
