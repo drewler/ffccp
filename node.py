@@ -38,7 +38,7 @@ class Node:
         bytes_read = 0
         self.tfrm = np.zeros((4,4))
         while bytes_read < tfrm_tag.length:
-            self.tfrm[bytes_read/16,:] = struct.unpack(">4f", tfrm_tag.binary_data[bytes_read:bytes_read+16])  # floats
+            self.tfrm[bytes_read//16,:] = struct.unpack(">4f", tfrm_tag.binary_data[bytes_read:bytes_read+16])  # floats
             bytes_read += 16
         self.tfrm[3,3] = 1.0;
     def parse_binf(self, binf_tag):
